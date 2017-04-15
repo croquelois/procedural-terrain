@@ -1,0 +1,17 @@
+{
+  "name": "procedural-terrain",
+  "description": "Procedural Terrain Generation",
+  "version": "1.0.0",
+  "author": {
+    "name": "Matthieu Croquelois",
+    "email": "croquelois@gmail.com"
+  },
+  "keywords": [
+    "procedural generation"
+  ],
+  "main": "./base.js",
+  "dependencies": {
+    "async": "^2.3.0",
+    "lwip": "0.0.9"
+  }
+}

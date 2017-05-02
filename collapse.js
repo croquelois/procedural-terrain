@@ -21,15 +21,15 @@ if(process.env["DEV"] == "TRUE"){
 }
 
 Terrain.prototype.removeIsolatedSpike = function(minH,maxH){
-  let p = this.pixels;
+  let heightmap = this.pixels;
   let w = this.width;
   let self = this;
-  this.applyXY(function(h,x,y){
-    let pts = self.getNeighbors({x,y});
+  this.applyXY(function(p,h){
+    let pts = self.getNeighbors(p);
     let low = null;
     let high = null;
     pts.forEach(function(pt){
-      if(pt.h === undefined) pt.h = p[pt.x+pt.y*w];
+      if(pt.h === undefined) pt.h = heightmap[pt.x+pt.y*w];
       if(!low || low.h > pt.h) low = pt;
       if(!high || high.h < pt.h) high = pt;
     });

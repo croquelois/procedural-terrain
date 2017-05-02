@@ -6,8 +6,8 @@ let async = require("async");
 
 function bind(g){ /*console.log(JSON.stringify(g,null,2));*/ return g.get.bind(g); }
 
-function loadingGradient(filename,cb){
-  lwip.open(filename, function(err,image){
+function loadingGradientNoBind(filename,cb){
+  lwip.open("gradients/" + filename, function(err,image){
     if(err) return cb(err);
 
     let width = image.width();
@@ -23,8 +23,15 @@ function loadingGradient(filename,cb){
   });
 }
 
+function loadingGradient(filename,cb){
+  loadingGradientNoBind(filename, function(err,g){
+    if(err) return cb(err);
+    return cb(null, bind(g));
+  });
+}
+
 function loadingAndCombineGradient(file1,file2,cb){
-  async.map([file1,file2],loadingGradient,function(err,gradients){
+  async.map([file1,file2],loadingGradientNoBind,function(err,gradients){
     if(err) return cb(err);
     gradients[0].scale(0.49999);
     gradients[1].scale(0.50000);
@@ -36,9 +43,13 @@ function loadingAndCombineGradient(file1,file2,cb){
 exports.loadingGradient = loadingGradient;
 
 exports.loadingGradients = function(cb){
-  loadingAndCombineGradient("gradients/bathymetry12.png","gradients/elevationWithSnow.png",function(err,gradient){
+  async.parallel({
+    elevationWithSnow: loadingAndCombineGradient.bind(null, "bathymetry12.png", "elevationWithSnow.png"),
+    desertMojave: loadingGradient.bind(null, "desertMojave.png")
+  },function(err, res){
     if(err) return cb(err);
-    exports.elevationWithSnow = gradient;
+    exports.elevationWithSnow = res.elevationWithSnow;
+    exports.desertMojave = res.desertMojave;
     return cb();
   });
 };

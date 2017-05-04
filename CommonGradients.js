@@ -45,11 +45,13 @@ exports.loadingGradient = loadingGradient;
 exports.loadingGradients = function(cb){
   async.parallel({
     elevationWithSnow: loadingAndCombineGradient.bind(null, "bathymetry12.png", "elevationWithSnow.png"),
-    desertMojave: loadingGradient.bind(null, "desertMojave.png")
+    desertMojave: loadingGradient.bind(null, "desertMojave.png"),
+    grandCanyon: loadingGradient.bind(null, "grandCanyon.png"),
   },function(err, res){
     if(err) return cb(err);
     exports.elevationWithSnow = res.elevationWithSnow;
     exports.desertMojave = res.desertMojave;
+    exports.grandCanyon = res.grandCanyon;
     return cb();
   });
 };

@@ -38,8 +38,10 @@ async function loadingAndCombineGradient(file1,file2){
 async function loadingGradients(cb){
   let elevationWithSnowPromise = loadingAndCombineGradient("bathymetry12.png", "elevationWithSnow.png");
   let desertMojavePromise = loadingGradient("desertMojave.png");
+  let grandCanyonPromise = loadingGradient("grandCanyon.png");  
   exports.elevationWithSnow = await elevationWithSnowPromise;
   exports.desertMojave = await desertMojavePromise;
+  exports.grandCanyon = await grandCanyonPromise;
 };
 
 exports.loadingGradient = loadingGradient;

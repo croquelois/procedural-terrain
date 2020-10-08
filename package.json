@@ -11,7 +11,12 @@
   ],
   "main": "./base.js",
   "dependencies": {
-    "async": "^2.3.0",
-    "lwip": "0.0.9"
+    "jimp": "^0.12.1",
+    "CellularAutomata": "file:./src/CellularAutomata",
+    "Gradient": "file:./src/Gradient",
+    "Grid": "file:./src/Grid",
+    "PerlinSimplex": "file:./src/PerlinSimplex",
+    "ParticuleSystem": "file:./src/ParticuleSystem",
+    "Terrain": "file:./src/Terrain"
   }
 }

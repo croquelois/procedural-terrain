@@ -1,6 +1,6 @@
 /* jshint esversion:6, node:true, loopfunc:true, undef: true, unused: true, sub:true */
 "use strict";
-let Buffer = require('buffer').Buffer;
+const {Buffer} = require('buffer');
 
 module.exports = function(Terrain){
 
@@ -8,7 +8,7 @@ module.exports = function(Terrain){
   // return a buffer with a binary serialization of the terrain
   // status: stable
   Terrain.prototype.store = function(){
-    let buf = new Buffer(4+4+this.height*this.width*8*(1+3+3+3));
+    let buf = Buffer.alloc(4+4+this.height*this.width*8*(1+3+3+3));
     let noAssert = false;
     let off = 0;
     off = buf.writeInt32LE(this.width, off, noAssert);
@@ -93,7 +93,7 @@ module.exports = function(Terrain){
     var width = this.width;
     var height = this.height;
     var offset = width*height;
-    if(!pixels) pixels = new Buffer(offset*3);
+    if(!pixels) pixels = Buffer.alloc(offset*3);
 
     this.eachXY(function(c,h,x,y){
       var i = (y*width + x);

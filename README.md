@@ -3,8 +3,6 @@ procedural terrain generation
 
 ## use
 
-run npm install, the code require async.js, and lwip. Lwip can be difficult to install if your compiler is not installed properly.
-
 ```
 npm install
 ```
@@ -47,3 +45,8 @@ before to call this one, be sure to call addColor.js, else everything will be gr
 
 city.js create city on the part between mountain and water
 ![city.png](/city.png)
+
+## canyon.js
+
+stand-alone create a terrain which try to look like the grand canyon
+![canyon.png](/canyon.png)

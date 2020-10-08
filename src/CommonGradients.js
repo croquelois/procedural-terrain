@@ -1,60 +1,51 @@
 /* jshint esversion:6, node:true, loopfunc:true, undef: true, unused: true, sub:true */
 "use strict";
-let Gradient = require("Gradient");
-let lwip = require("lwip");
-let async = require("async");
+const Gradient = require("Gradient");
+const Jimp = require('jimp');
 
-function bind(g){ /*console.log(JSON.stringify(g,null,2));*/ return g.get.bind(g); }
-
-function loadingGradientNoBind(filename,cb){
-  lwip.open("gradients/" + filename, function(err,image){
-    if(err) return cb(err);
-
-    let width = image.width();
-    //let height = image.height();
-
-    let gradient = new Gradient();
-    for(let x=0;x<width;x++){
-      let p = x/(width-1);
-      let c = image.getPixel(x, 0);
-      gradient.addColorStop(p,{r:c.r/255,g:c.g/255,b:c.b/255});
-    }
-    return cb(null,gradient);
-  });
+async function loadingGradientNoBind(filename){
+  let image = await Jimp.read("gradients/" + filename);
+  let {data,width} = image.bitmap;
+  let gradient = new Gradient();
+  for(let x=0;x<width;x++){
+    let p = x/(width-1);
+    let r = data[x*4+0]/255;
+    let g = data[x*4+1]/255;
+    let b = data[x*4+2]/255;
+    gradient.addColorStop(p,{r,g,b});
+  }
+  return gradient;
 }
 
-function loadingGradient(filename,cb){
-  loadingGradientNoBind(filename, function(err,g){
-    if(err) return cb(err);
-    return cb(null, bind(g));
-  });
+async function loadingGradient(filename){
+  let gradient = await loadingGradientNoBind(filename);
+  return gradient.get.bind(gradient);
 }
 
-function loadingAndCombineGradient(file1,file2,cb){
-  async.map([file1,file2],loadingGradientNoBind,function(err,gradients){
-    if(err) return cb(err);
-    gradients[0].scale(0.49999);
-    gradients[1].scale(0.50000);
-    gradients[1].shift(0.50000);
-    return cb(null,bind(Gradient.combine(gradients[0],gradients[1])));
-  });
+async function loadingAndCombineGradient(file1,file2){
+  let gradientsPromise = [
+    loadingGradientNoBind(file1),
+    loadingGradientNoBind(file2)
+  ];
+  let gradients = await Promise.all(gradientsPromise);
+  gradients[0].scale(0.49999);
+  gradients[1].scale(0.50000);
+  gradients[1].shift(0.50000);
+  let gradient = Gradient.combine(gradients[0],gradients[1]);
+  return gradient.get.bind(gradient);
 }
+
+async function loadingGradients(cb){
+  let elevationWithSnowPromise = loadingAndCombineGradient("bathymetry12.png", "elevationWithSnow.png");
+  let desertMojavePromise = loadingGradient("desertMojave.png");
+  let grandCanyonPromise = loadingGradient("grandCanyon.png");  
+  exports.elevationWithSnow = await elevationWithSnowPromise;
+  exports.desertMojave = await desertMojavePromise;
+  exports.grandCanyon = await grandCanyonPromise;
+};
 
 exports.loadingGradient = loadingGradient;
-
-exports.loadingGradients = function(cb){
-  async.parallel({
-    elevationWithSnow: loadingAndCombineGradient.bind(null, "bathymetry12.png", "elevationWithSnow.png"),
-    desertMojave: loadingGradient.bind(null, "desertMojave.png"),
-    grandCanyon: loadingGradient.bind(null, "grandCanyon.png"),
-  },function(err, res){
-    if(err) return cb(err);
-    exports.elevationWithSnow = res.elevationWithSnow;
-    exports.desertMojave = res.desertMojave;
-    exports.grandCanyon = res.grandCanyon;
-    return cb();
-  });
-};
+exports.loadingGradients = loadingGradients;
 
 let gradient;
 gradient = new Gradient();

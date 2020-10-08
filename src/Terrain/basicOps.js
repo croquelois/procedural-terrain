@@ -112,6 +112,13 @@ Terrain.prototype.setColor = function(p, c){
   this.colors[p.x+p.y*this.width] = c;
 };
 
+// modif: normals
+// return nothing
+// status: new
+Terrain.prototype.setNormal = function(p, n){
+  this.normals[p.x+p.y*this.width] = n;
+};
+
 // modif: heights
 // the argument is expected to be a number or another terrain
 // status: stable

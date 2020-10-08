@@ -65,7 +65,7 @@ Grid.prototype.has = function(p,i){ return (this.data[p.y][p.x] & i); };
 Grid.prototype.each = function(f){
   for(var y=0;y<this.data.length;y++){
     var d = this.data[y];
-    for(var x=0;x<d.length;x++) d[x] = f({x:x,y:y},d[x]);
+    for(var x=0;x<d.length;x++) d[x] = f({x,y},d[x]);
   }
   return this;
 };

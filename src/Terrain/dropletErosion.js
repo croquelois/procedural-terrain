@@ -149,7 +149,7 @@ Terrain.prototype.genDropletErosion = function(iterations, params){
     do{
       pos = new Position(Math.random()*this.width, Math.random()*this.height);
       fillHeightAndGrad(pos);
-    }while(pos.height > minDropHeight);
+    }while(pos.height < minDropHeight);
 
     let s=0; // soil carried
     let v=0; // velocity
